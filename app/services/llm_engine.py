@@ -38,9 +38,6 @@ async def call_ollama(prompt: str) -> str:
 
 
 async def call_groq(prompt: str) -> str:
-    if not settings.GROQ_API_KEY:
-        raise RuntimeError("Groq API key not configured")
-
     async with httpx.AsyncClient(timeout=300.0) as client:
         response = await client.post(
             "https://api.groq.com/openai/v1/chat/completions",
@@ -50,14 +47,16 @@ async def call_groq(prompt: str) -> str:
             },
             json={
                 "model": settings.GROQ_MODEL,
-                "messages": [
-                    {"role": "user", "content": prompt}
-                ],
+                "messages": [{"role": "user", "content": prompt}],
                 "temperature": 0.0,
             },
         )
-        response.raise_for_status()
-        return response.json()["choices"][0]["message"]["content"]
+
+    if response.status_code != 200:
+        logger.error(f"GROQ ERROR {response.status_code} | {response.text}")
+        raise RuntimeError("Groq LLM call failed")
+
+    return response.json()["choices"][0]["message"]["content"]
 
 
 async def call_llm(prompt: str) -> str:
