@@ -1,0 +1,21 @@
+# Local virtual environments
+venv/
+.venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Git
+.git/
+.gitignore
+
+# Local databases
+*.db
+*.sqlite3
+
+# Large data folders (if any)
+data/
