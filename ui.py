@@ -174,6 +174,11 @@ if not st.session_state.token:
 # MAIN DASHBOARD
 # ======================
 
+if st.session_state.current_note_id:
+    if st.button("➕ New SOAP Note"):
+        st.session_state.current_note_id = None
+        st.session_state.editing = False
+        st.rerun()
 
 submit_generate = False
 
