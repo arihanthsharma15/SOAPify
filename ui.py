@@ -57,7 +57,7 @@ st.sidebar.markdown("---")
 # DASHBOARD (SIDEBAR)
 # ======================
 
-if st.session_state.token and not st.session_state.current_note_id:
+if st.session_state.token:
     st.sidebar.markdown("### 📋 Dashboard")
 
     try:
@@ -174,15 +174,20 @@ if not st.session_state.token:
 # MAIN DASHBOARD
 # ======================
 
-st.title("🩺 SOAP Note Generator")
 
-with st.form("generate_form"):
-    col1, col2 = st.columns(2)
-    patient_name = col1.text_input("Patient Name")
-    age = col2.number_input("Age", min_value=0, max_value=120)
-    transcript = st.text_area("Clinical Transcript", height=250)
+submit_generate = False
 
-    submit_generate = st.form_submit_button(" Generate SOAP Note")
+
+if not st.session_state.current_note_id:
+    st.title("🩺 SOAP Note Generator")
+
+    with st.form("generate_form"):
+        col1, col2 = st.columns(2)
+        patient_name = col1.text_input("Patient Name")
+        age = col2.number_input("Age", min_value=0, max_value=120)
+        transcript = st.text_area("Clinical Transcript", height=250)
+
+        submit_generate = st.form_submit_button(" Generate SOAP Note")
 
 if submit_generate:
     if not patient_name or not transcript:
