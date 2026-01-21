@@ -62,7 +62,7 @@ if st.session_state.token and not st.session_state.current_note_id:
 
     try:
         dash_res = requests.get(
-            f"{API_BASE}/notes/DashboardData",
+            f"{API_BASE}/api/v1/notes/DashboardData",
             headers=auth_headers(),
             timeout=5,
         )
@@ -118,7 +118,7 @@ if not st.session_state.token:
             if st.form_submit_button("Login"):
                 try:
                     res = requests.post(
-                        f"{API_BASE}/auth/login",
+                        f"{API_BASE}/api/v1/auth/login",
                         data={
                             "username": email,
                             "password": password,
@@ -150,7 +150,7 @@ if not st.session_state.token:
                 else:
                     try:
                         res = requests.post(
-                            f"{API_BASE}/auth/register",
+                            f"{API_BASE}/api/v1/auth/register",
                             json={
                                 "full_name": full_name,
                                 "email": email,
@@ -189,7 +189,7 @@ if submit_generate:
         st.warning("Patient name and transcript required")
     else:
         res = requests.post(
-            f"{API_BASE}/notes/Generate",
+            f"{API_BASE}/api/v1/notes/Generate",
             json={
                 "patient_name": patient_name,
                 "age": age,
@@ -214,7 +214,7 @@ if st.session_state.current_note_id:
     note_id = st.session_state.current_note_id
 
     res = requests.get(
-        f"{API_BASE}/notes/Status/{note_id}",
+        f"{API_BASE}/api/v1/notes/Status/{note_id}",
         headers=auth_headers(),
     )
 
@@ -249,7 +249,7 @@ if st.session_state.current_note_id:
 
                 if col_a.button("💾 Save Changes"):
                     update_res = requests.put(
-                        f"{API_BASE}/notes/Update/{note_id}",
+                        f"{API_BASE}/api/v1/notes/Update/{note_id}",
                         json={"updated_content": edited},
                         headers=auth_headers(),
                     )
