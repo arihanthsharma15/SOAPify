@@ -10,7 +10,7 @@ from datetime import datetime
 
 API_BASE = os.getenv(
     "API_BASE_URL",
-    "http://localhost:8000/api/v1"
+    "https://soapify-backend.onrender.com"
 )
 
 st.set_page_config(

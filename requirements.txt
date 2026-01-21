@@ -11,3 +11,4 @@ passlib[bcrypt]==1.7.4
 requests
 chromadb
 python-multipart
+streamlit
