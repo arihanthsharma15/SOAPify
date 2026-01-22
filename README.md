@@ -62,10 +62,13 @@ These constraints are deployment-related and not architectural limitations of th
 
 ---
 
-### Human-in-the-Loop Editing
-- Generated SOAP notes can be reviewed and edited
+### ✍️ Human-in-the-Loop Editing
+- Generated SOAP notes can be reviewed and edited by the clinician
 - Updates are saved back to the database
 - Supports real clinical review workflows
+
+> Clinical documentation is a high-stakes domain where AI outputs cannot be blindly trusted.  
+> SOAPify intentionally keeps a **human-in-the-loop**, ensuring the final clinical note is always reviewed and approved by a doctor before use.
 
 ---
 
