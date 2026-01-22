@@ -62,7 +62,7 @@ These constraints are deployment-related and not architectural limitations of th
 
 ---
 
-### ✍️ Human-in-the-Loop Editing
+### Human-in-the-Loop Editing
 - Generated SOAP notes can be reviewed and edited by the clinician
 - Updates are saved back to the database
 - Supports real clinical review workflows
