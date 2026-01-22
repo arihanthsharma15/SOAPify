@@ -83,7 +83,7 @@ These constraints are deployment-related and not architectural limitations of th
 ## System Architecture
 
 
-![alt text](architecture.drawio.png)
+file:///home/arihanthsharma15/Downloads/architecture.drawio.png
 
 
 ---
