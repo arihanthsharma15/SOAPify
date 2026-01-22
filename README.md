@@ -84,24 +84,30 @@ These constraints are deployment-related and not architectural limitations of th
 
 
 
+flowchart TD
+    U[Doctor / Clinician] --> F[Streamlit Frontend<br/>• Auth & Session<br/>• Dashboard & Editing]
 
-┌──────────────┐ ┌──────────────────┐ ┌─────────────────┐
-│ Streamlit │ ---> │ FastAPI API │ ---> │ PostgreSQL DB │
-│ Frontend │ │ (Async + JWT) │ │ (Neon Cloud) │
-└──────────────┘ └──────────────────┘ └─────────────────┘
-│ │
-│ ▼
-│ ┌─────────────────┐
-│ │ RAG Engine │
-│ │ (ChromaDB) │
-│ └─────────────────┘
-│ │
-▼ ▼
-┌──────────────────────────────────────────┐
-│ LLM Inference Layer │
-│ • Ollama (local development) │
-│ • Groq API (production inference) │
-└──────────────────────────────────────────┘
+    F -->|JWT Auth| B[FastAPI Backend]
+
+    subgraph B["FastAPI Backend (Layered Modular Monolith)"]
+        Auth[Auth Module]
+        Users[User Module]
+        Notes[Notes Module]
+        Services[Service Layer]
+        Tasks[Async Background Tasks]
+
+        Auth --> Services
+        Users --> Services
+        Notes --> Services
+        Services --> Tasks
+    end
+
+    Tasks --> DB[(PostgreSQL<br/>Neon Cloud)]
+    Tasks --> RAG[(ChromaDB<br/>Vector Store)]
+    Tasks --> LLM[LLM Inference]
+
+    LLM --> Ollama[Ollama<br/>(Local Dev)]
+    LLM --> Groq[Groq API<br/>(Production)]
 
 
 ---
