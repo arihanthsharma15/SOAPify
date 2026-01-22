@@ -1,6 +1,5 @@
 # SOAPify 🩺
 
-> **TL;DR**  
 > SOAPify is a production-grade, async AI system that converts raw doctor–patient conversations into validated SOAP notes using strict prompt discipline, retrieval-augmented generation (RAG), and secure multi-user isolation.
 
 SOAPify is an AI-powered clinical scribe designed around **real-world clinical workflows**, not toy demos.  
@@ -8,16 +7,30 @@ It focuses on **correctness, reliability, data isolation, and system design** �
 
 ---
 
-## 🚀 Live Demo
+## Live Demo
 
 - **Frontend (Streamlit):** https://soapify-scribe.streamlit.app/  
 - **Backend API:** https://soapify-backend.onrender.com  
 
 ---
 
-## ✨ Key Features
+---
 
-### 🧠 AI-Powered SOAP Generation
+## Demo Notes (Free Tier Limitations)
+
+- The frontend is deployed on **Streamlit Cloud (free tier)**.  
+  On mobile devices, switching browser tabs may cause the page to refresh due to Streamlit session behavior.
+
+- The backend is deployed on **Render (free tier)**.  
+  After periods of inactivity, the backend may enter a sleep state.  
+  The first request can take a few seconds while the service wakes up.
+
+These constraints are deployment-related and not architectural limitations of the system.
+
+
+## Key Features
+
+### AI-Powered SOAP Generation
 - Converts free-form clinical transcripts into **strict SOAP format**
 - Enforces clinical discipline:
   - No hallucinated vitals
@@ -26,7 +39,7 @@ It focuses on **correctness, reliability, data isolation, and system design** �
 
 ---
 
-### 🔁 Retrieval-Augmented Generation (RAG)
+### Retrieval-Augmented Generation (RAG)
 - Retrieves **only previous SOAP notes of the same patient**
 - Injects **relevant past medical history** into the prompt
 - RAG retrieval is scoped by **doctor_id + patient_id**
@@ -34,7 +47,7 @@ It focuses on **correctness, reliability, data isolation, and system design** �
 
 ---
 
-### ⚡ Asynchronous & Scalable
+### Asynchronous & Scalable
 - SOAP generation runs as **background tasks** (non-blocking)
 - Frontend polls status:
   - `PROCESSING → COMPLETED / FAILED`
@@ -42,28 +55,28 @@ It focuses on **correctness, reliability, data isolation, and system design** �
 
 ---
 
-### 🔐 Secure Authentication & Isolation
+### Secure Authentication & Isolation
 - JWT-based login & signup
 - Doctor-scoped data isolation
 - Each doctor can access **only their own patients and notes**
 
 ---
 
-### ✍️ Human-in-the-Loop Editing
+### Human-in-the-Loop Editing
 - Generated SOAP notes can be reviewed and edited
 - Updates are saved back to the database
 - Supports real clinical review workflows
 
 ---
 
-### 📊 Interactive Dashboard
+### Interactive Dashboard
 - Sidebar dashboard showing recent SOAP notes
 - Click to view past notes
 - Create new SOAP notes without logout or refresh
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 
 
@@ -87,13 +100,39 @@ It focuses on **correctness, reliability, data isolation, and system design** �
 └──────────────────────────────────────────┘
 
 
-
 ---
 
-## 🧩 Tech Stack
+## Architectural Style: Modular Monolith
+
+SOAPify is intentionally designed as a **modular monolith**, not a microservices setup.
+
+### Why Modular Monolith?
+- Early-stage systems benefit from **simplicity and debuggability**
+- Avoids premature microservice complexity
+- Enables clear domain boundaries with shared infrastructure
+
+### Module Boundaries
+Each domain is isolated at the code level using a layered modular structure:
+
+- **Auth Module** — authentication & authorization
+- **User Module** — doctor accounts & identity
+- **Notes Module** — transcripts, SOAP notes, edits
+- **RAG Module** — patient history retrieval & embeddings
+- **LLM Module** — model orchestration (Ollama / Groq)
+- The system follows a **layered modular monolith** approach rather than strict folder-per-domain separation.
+
+
+Modules communicate via **explicit interfaces**, not shared globals.
+
+
+### Evolution Path
+The architecture allows future extraction into microservices if required, without major rewrites.
+
+## Tech Stack
 
 ### Backend
-- FastAPI — async REST API
+-  FastAPI — async REST API
+- **Layered Modular Monolith architecture** (domain boundaries enforced at the service & API layers)
 - PostgreSQL (Neon) — relational database
 - SQLAlchemy — ORM
 - JWT (python-jose) — authentication
@@ -116,7 +155,7 @@ It focuses on **correctness, reliability, data isolation, and system design** �
 
 ---
 
-## 🧠 Prompt Engineering (Key Differentiator)
+## Prompt Engineering
 
 SOAPify uses a **strict, rule-based clinical prompt**:
 
@@ -129,7 +168,7 @@ This prompt discipline makes the system **interview-ready and industry-grade**.
 
 ---
 
-## 🔄 Application Flow
+## Application Flow
 
 1. Doctor logs in / signs up  
 2. Past SOAP notes load in the dashboard  
@@ -145,7 +184,7 @@ This prompt discipline makes the system **interview-ready and industry-grade**.
 
 ---
 
-## 🚧 Why This Problem Is Non-Trivial
+## Why This Problem Is Non-Trivial
 
 - Clinical notes cannot tolerate hallucinations
 - LLM latency breaks synchronous APIs
@@ -156,7 +195,7 @@ SOAPify addresses these challenges with **guardrails, async design, and strict i
 
 ---
 
-## 🧪 What This Project Demonstrates
+## What This Project Demonstrates
 
 - Real-world AI system design (not toy demos)
 - Handling LLM latency and failures
@@ -166,7 +205,7 @@ SOAPify addresses these challenges with **guardrails, async design, and strict i
 
 ---
 
-## 📌 Planned Enhancements
+## Planned Enhancements
 
 - Rate limiting & API key scopes
 - Role-based access (admin / reviewer)
@@ -177,3 +216,17 @@ SOAPify addresses these challenges with **guardrails, async design, and strict i
 ---
 
 This project was built to reflect **how real AI products are engineered**, not just how models are called.
+
+
+## Running Locally (Optional)
+
+This project is fully deployed and accessible via the live demo.
+
+Local setup is intended for development and experimentation only.
+
+High-level steps:
+- Configure environment variables (DB, JWT secret, LLM provider)
+- Start FastAPI backend
+- Run Streamlit frontend
+
+Due to infrastructure and credential requirements, detailed local setup is intentionally omitted.
