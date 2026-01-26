@@ -3,6 +3,8 @@ import requests
 import time
 import os
 from datetime import datetime
+import pytz
+
 
 # ======================
 # CONFIG
@@ -36,6 +38,19 @@ def auth_headers():
         "Authorization": f"Bearer {st.session_state.token}"
     }
 
+def get_logged_in_doctor():
+    try:
+        res = requests.get(
+            f"{API_BASE}/api/v1/auth/me",
+            headers=auth_headers(),
+            timeout=5,
+        )
+        if res.status_code == 200:
+            return res.json().get("full_name", "Doctor")
+    except requests.exceptions.RequestException:
+        pass
+    return "Doctor"
+
 # ======================
 # SIDEBAR
 # ======================
@@ -44,7 +59,8 @@ st.sidebar.title("SOAPify")
 st.sidebar.caption("AI Clinical Scribe")
 
 if st.session_state.token:
-    st.sidebar.success("Logged in")
+    doctor_name = get_logged_in_doctor()
+    st.sidebar.success(f"👨‍⚕️ {doctor_name}")
     if st.sidebar.button("🚪 Logout"):
         st.session_state.clear()
         st.rerun()
@@ -77,7 +93,12 @@ if st.session_state.token:
                     created_at = n.get("created_at")
 
                     try:
-                        time_str = datetime.fromisoformat(created_at).strftime("%H:%M")
+                        dt_utc = datetime.fromisoformat(
+                            created_at.replace("Z", "+00:00")
+                        )
+                        ist = pytz.timezone("Asia/Kolkata")
+                        dt_ist = dt_utc.astimezone(ist)
+                        time_str = dt_ist.strftime("%H:%M")
                     except Exception:
                         time_str = "--:--"
 
@@ -108,8 +129,7 @@ if not st.session_state.token:
     st.subheader("Secure AI-Powered Clinical Scribe")
 
     tab_login, tab_signup = st.tabs(["🔐 Login", "🆕 Sign Up"])
-
-    # ---------- LOGIN ----------
+ # ---------- LOGIN ----------
     with tab_login:
         with st.form("login_form"):
             email = st.text_input("Email")
@@ -136,7 +156,7 @@ if not st.session_state.token:
                 except requests.exceptions.RequestException:
                     st.error("Backend not reachable")
 
-    # ---------- SIGNUP ----------
+# ---------- SIGNUP ----------
     with tab_signup:
         with st.form("signup_form"):
             full_name = st.text_input("Full Name")
@@ -181,7 +201,6 @@ if st.session_state.current_note_id:
         st.rerun()
 
 submit_generate = False
-
 
 if not st.session_state.current_note_id:
     st.title("🩺 SOAP Note Generator")
