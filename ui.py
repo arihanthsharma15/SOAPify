@@ -41,7 +41,7 @@ def auth_headers():
 def get_logged_in_doctor():
     try:
         res = requests.get(
-            f"{API_BASE}/api/v1/auth/me",
+            f"{API_BASE}/api/v1/user/me",
             headers=auth_headers(),
             timeout=5,
         )
