@@ -38,18 +38,6 @@ def auth_headers():
         "Authorization": f"Bearer {st.session_state.token}"
     }
 
-def get_logged_in_doctor():
-    try:
-        res = requests.get(
-            f"{API_BASE}/api/v1/auth/me",
-            headers=auth_headers(),
-            timeout=5,
-        )
-        if res.status_code == 200:
-            return res.json().get("full_name", "Doctor")
-    except requests.exceptions.RequestException:
-        pass
-    return "Doctor"
 
 # ======================
 # SIDEBAR
@@ -59,8 +47,6 @@ st.sidebar.title("SOAPify")
 st.sidebar.caption("AI Clinical Scribe")
 
 if st.session_state.token:
-    doctor_name = get_logged_in_doctor()
-    st.sidebar.success(f"👨‍⚕️ {doctor_name}")
     if st.sidebar.button("🚪 Logout"):
         st.session_state.clear()
         st.rerun()
