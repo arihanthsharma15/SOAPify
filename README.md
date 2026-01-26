@@ -1,4 +1,4 @@
-# SOAPify 🩺
+# SOAPify 
 
 > SOAPify is a production-oriented, async AI system that converts raw doctor–patient conversations into validated SOAP notes using strict prompt discipline, retrieval-augmented generation (RAG), and secure multi-user isolation.
 
