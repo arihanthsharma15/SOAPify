@@ -84,8 +84,8 @@ These constraints are deployment-related and not architectural limitations of th
 
 
 
-<img width="357" height="1321" alt="architecture drawio" src="https://github.com/user-attachments/assets/18a7f4ba-a77b-44d7-84c5-3c2b1b44fd1b" />
 
+>>>>>>> 5016312 (updating the codes)
 
 
 ---

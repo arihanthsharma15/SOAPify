@@ -3,18 +3,17 @@ from datetime import datetime, timedelta
 from jose import jwt
 from app.core.config import settings
 
-# pwd_context ko hata rahe hain compatibility issues ki wajah se
-# Seedha bcrypt library use karenge
+
 
 def get_password_hash(password: str) -> str:
-    # Password ko bytes mein convert karna zaroori hai
+    
     pwd_bytes = password.encode('utf-8')
     salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(pwd_bytes, salt)
     return hashed_password.decode('utf-8')
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    # Plain password aur hashed password dono ko bytes mein convert karke compare karna hai
+    
     return bcrypt.checkpw(
         plain_password.encode('utf-8'), 
         hashed_password.encode('utf-8')

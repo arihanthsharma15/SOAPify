@@ -14,7 +14,7 @@ class TranscriptInDB(TranscriptCreate):
     status: str
     created_at: datetime
 
-    class Config: # 'C' should be Capital
+    class Config: 
         from_attributes = True
 
 #response
