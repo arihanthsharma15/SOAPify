@@ -5,6 +5,25 @@ const buildHeaders = (token, extra = {}) => ({
   ...extra,
 });
 
+function formatErrorDetail(detail, fallback = 'Request failed') {
+  if (!detail) return fallback;
+  if (typeof detail === 'string') return detail;
+  if (Array.isArray(detail)) {
+    return detail
+      .map((item) => {
+        if (typeof item === 'string') return item;
+        const field = Array.isArray(item?.loc) ? item.loc.slice(1).join('.') : '';
+        const msg = item?.msg || JSON.stringify(item);
+        return field ? `${field}: ${msg}` : msg;
+      })
+      .join(' | ');
+  }
+  if (typeof detail === 'object') {
+    return detail.message || JSON.stringify(detail);
+  }
+  return fallback;
+}
+
 export async function registerUser(payload) {
   const res = await fetch(`${API_BASE}/api/v1/auth/register`, {
     method: 'POST',
@@ -14,7 +33,7 @@ export async function registerUser(payload) {
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || 'Registration failed');
+    throw new Error(formatErrorDetail(err.detail, 'Registration failed'));
   }
 
   return res.json();
@@ -33,7 +52,7 @@ export async function loginUser(email, password) {
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || 'Login failed');
+    throw new Error(formatErrorDetail(err.detail, 'Login failed'));
   }
 
   return res.json();
@@ -72,7 +91,7 @@ async function authedGet(path, token) {
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || 'Request failed');
+    throw new Error(formatErrorDetail(err.detail, 'Request failed'));
   }
 
   return res.json();
@@ -87,7 +106,7 @@ async function authedPost(path, token, payload) {
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || 'Request failed');
+    throw new Error(formatErrorDetail(err.detail, 'Request failed'));
   }
 
   return res.json();
@@ -102,7 +121,7 @@ async function authedPut(path, token, payload) {
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || 'Request failed');
+    throw new Error(formatErrorDetail(err.detail, 'Request failed'));
   }
 
   return res.json();
