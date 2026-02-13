@@ -62,7 +62,7 @@ SOAPify intentionally keeps a human-in-the-loop, ensuring the final clinical not
 
 ## Architectural Diagram
 
-![SOAPify Architecture Diagram](./image.png)
+![SOAPify Architecture Diagram](soapify-backend/diagram.png)
 
 
 
