@@ -1,0 +1,46 @@
+# Local development only (not used in production deployment)
+
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: mednotes_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: mednotes_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mednotes_net
+
+  backend:
+    build: .
+    container_name: soapify_backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    environment:
+      DATABASE_URL: postgresql://postgres:admin123@db:5432/mednotes_db
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    networks:
+      - mednotes_net
+
+volumes:
+  postgres_data:
+
+networks:
+  mednotes_net:
+    driver: bridge
